@@ -1,6 +1,8 @@
 package dev.modroll.basic;
 
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroups;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
@@ -32,7 +34,12 @@ public class ModItems {
     }
 
     public static void initialize() {
+        // Called during mod initialization to register our items.
 
+        // Get the event for modifying entries in the food and drink group.
+        // And register an event handler that adds our bubble gum to the food and drink group.
+        ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS)
+                .register((itemGroup) -> itemGroup.add(ModItems.TASER));
     }
 
     public static final Item TASER = register(
