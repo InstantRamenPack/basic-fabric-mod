@@ -3,13 +3,15 @@
 	"id": "basic",
 	"version": "${version}",
 	"name": "Basic",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"description": "Basic Fabric mod adding squirrels to Minecraft. Made as a project for CS SWE 1.",
 	"authors": [
-		"Me!"
+		"Raymond Zhu",
+		"Kian Jenks",
+		"Jasmine Butler"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"homepage": "https://github.com/InstantRamenPack/basic-fabric-mod",
+		"sources": "https://github.com/InstantRamenPack/basic-fabric-mod"
 	},
 	"license": "CC0-1.0",
 	"icon": "assets/basic/icon.png",
