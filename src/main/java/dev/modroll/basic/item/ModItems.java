@@ -39,7 +39,7 @@ public class ModItems {
             itemGroup.add(ModItems.SQUIRREL_HIDE);
         });
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.SPAWN_EGGS).register((itemGroup) -> {
-            itemGroup.add(ModItems.SQUIRREL_HIDE);
+            itemGroup.add(ModItems.SQUIRREL_SPAWN_EGG);
         });
     }
 
