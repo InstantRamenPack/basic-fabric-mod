@@ -35,10 +35,28 @@ public class ModItems {
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS).register((itemGroup) -> {
                 itemGroup.add(ModItems.TASER);
         });
+        ItemGroupEvents.modifyEntriesEvent(ItemGroups.INGREDIENTS).register((itemGroup) -> {
+            itemGroup.add(ModItems.SQUIRREL_HIDE);
+        });
+        ItemGroupEvents.modifyEntriesEvent(ItemGroups.SPAWN_EGGS).register((itemGroup) -> {
+            itemGroup.add(ModItems.SQUIRREL_HIDE);
+        });
     }
 
     public static final Item TASER = register(
             "taser",
+            Item::new,
+            new Item.Settings()
+    );
+
+    public static final Item SQUIRREL_HIDE = register(
+            "squirrel_hide",
+            Item::new,
+            new Item.Settings()
+    );
+
+    public static final Item SQUIRREL_SPAWN_EGG = register(
+            "squirrel_spawn_egg",
             Item::new,
             new Item.Settings()
     );
