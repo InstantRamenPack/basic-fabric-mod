@@ -1,9 +1,11 @@
 package dev.modroll.basic.item;
 
 import dev.modroll.basic.Basic;
+import dev.modroll.basic.entity.ModEntities;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroups;
+import net.minecraft.item.SpawnEggItem;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
@@ -57,7 +59,7 @@ public class ModItems {
 
     public static final Item SQUIRREL_SPAWN_EGG = register(
             "squirrel_spawn_egg",
-            Item::new,
-            new Item.Settings()
+            SpawnEggItem::new,
+            new Item.Settings().spawnEgg(ModEntities.SQUIRREL)
     );
 }
