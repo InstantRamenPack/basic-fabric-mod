@@ -19,26 +19,19 @@ public class ModItems {
             Function<Item.Settings, Item> itemFactory,
             Item.Settings settings
     ) {
-        // Create a unique registry key for this item.
         RegistryKey<Item> itemKey = RegistryKey.of(
                 RegistryKeys.ITEM,
                 Identifier.of(Basic.MOD_ID, name)
         );
-
-        // Create the item instance using the provided factory and settings.
         Item item = itemFactory.apply(settings.registryKey(itemKey));
-
-        // Register the item with Minecraft's item registry.
         Registry.register(Registries.ITEM, itemKey, item);
 
         return item;
     }
 
-    public static void initialize() {
+    public static void registerModItems() {
         // Called during mod initialization to register our items.
 
-        // Get the event for modifying entries in the food and drink group.
-        // And register an event handler that adds our bubble gum to the food and drink group.
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS).register((itemGroup) -> {
                 itemGroup.add(ModItems.TASER);
         });
