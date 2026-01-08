@@ -36,7 +36,6 @@ public class SquirrelEntity extends AnimalEntity implements RangedAttackMob {
         this.goalSelector.add(1, new SwimGoal(this));
         this.goalSelector.add(1, new PowderSnowJumpGoal(this, this.getEntityWorld()));
         this.goalSelector.add(2, new EscapeDangerGoal(this, 2.2));
-//        this.goalSelector.add(2, new AnimalMateGoal(this, 0.8));
         this.goalSelector.add(3, new ProjectileAttackGoal(this, 1.25, 40, 20.0F));
         this.goalSelector.add(4, new FleeEntityGoal<>(this, WolfEntity.class, 10.0F, 2.2, 2.2));
         this.goalSelector.add(5, new WanderAroundFarGoal(this, 0.6));
@@ -48,7 +47,7 @@ public class SquirrelEntity extends AnimalEntity implements RangedAttackMob {
         return AnimalEntity.createAnimalAttributes()
                 .add(EntityAttributes.MAX_HEALTH, 5.0)
                 .add(EntityAttributes.MOVEMENT_SPEED, 0.3F)
-                .add(EntityAttributes.ATTACK_DAMAGE, 10.0);
+                .add(EntityAttributes.ATTACK_DAMAGE, 20.0);
     }
 
     @Override
