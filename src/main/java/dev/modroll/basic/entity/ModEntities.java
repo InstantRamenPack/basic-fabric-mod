@@ -15,7 +15,7 @@ public class ModEntities {
     public static final EntityType<SquirrelEntity> SQUIRREL = Registry.register(Registries.ENTITY_TYPE,
             Identifier.of(Basic.MOD_ID, "squirrel"),
             EntityType.Builder.create(SquirrelEntity::new, SpawnGroup.CREATURE)
-                    .dimensions(1f, 1f) // TODO: change when model updates
+                    .dimensions(0.5f, 0.75f)
                     .build(RegistryKey.of(RegistryKeys.ENTITY_TYPE, Identifier.of(Basic.MOD_ID, "squirrel"))));
 
     public static void registerModEntities() {
