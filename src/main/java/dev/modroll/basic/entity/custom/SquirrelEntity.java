@@ -40,7 +40,6 @@ public class SquirrelEntity extends AnimalEntity {
         this.goalSelector.add(4, new FleeEntityGoal<>(this, WolfEntity.class, 10.0F, 2.2, 2.2));
         this.goalSelector.add(6, new WanderAroundFarGoal(this, 0.6));
         this.goalSelector.add(11, new LookAtEntityGoal(this, PlayerEntity.class, 10.0F));
-        // TODO: add actual goals
     }
 
     public static DefaultAttributeContainer.Builder createAttributes() {
@@ -48,7 +47,6 @@ public class SquirrelEntity extends AnimalEntity {
                 .add(EntityAttributes.MAX_HEALTH, 5.0)
                 .add(EntityAttributes.MOVEMENT_SPEED, 0.3F)
                 .add(EntityAttributes.ATTACK_DAMAGE, 10.0);
-        // TODO: add actual attributes
     }
 
     private void setupAnimationStates() {
@@ -108,5 +106,10 @@ public class SquirrelEntity extends AnimalEntity {
     @Nullable
     public PassiveEntity createChild(ServerWorld world, PassiveEntity entity) {
         return ModEntities.SQUIRREL.create(world, SpawnReason.BREEDING);
+    }
+
+    @Override
+    public void fall(double heightDifference, boolean onGround, net.minecraft.block.BlockState state, net.minecraft.util.math.BlockPos pos) {
+        // do nothing
     }
 }
