@@ -35,7 +35,7 @@ public class SquirrelEntity extends AnimalEntity implements RangedAttackMob {
     protected void initGoals() {
         this.goalSelector.add(1, new SwimGoal(this));
         this.goalSelector.add(1, new PowderSnowJumpGoal(this, this.getEntityWorld()));
-        this.goalSelector.add(2, new ProjectileAttackGoal(this, 1.0, 10, 3.0F));
+        this.goalSelector.add(2, new ProjectileAttackGoal(this, 1.0, 20, 16.0F));
         this.goalSelector.add(3, new EscapeDangerGoal(this, 2.2));
         this.goalSelector.add(4, new FleeEntityGoal<>(this, WolfEntity.class, 10.0F, 2.2, 2.2));
         this.goalSelector.add(5, new WanderAroundFarGoal(this, 0.6));
@@ -113,18 +113,19 @@ public class SquirrelEntity extends AnimalEntity implements RangedAttackMob {
         Vec3d vec3d = this.getEyePos();
         Vec3d vec3d2 = target.getEyePos().subtract(vec3d);
         Vec3d vec3d3 = vec3d2.normalize();
-        int i = MathHelper.floor(vec3d2.length()) + 7;
 
-        for (int j = 1; j < i; j++) {
-            Vec3d vec3d4 = vec3d.add(vec3d3.multiply(j));
-            serverWorld.spawnParticles(ParticleTypes.SONIC_BOOM, vec3d4.x, vec3d4.y, vec3d4.z, 1, 0.0, 0.0, 0.0, 0.0);
-        }
-
-        this.playSound(SoundEvents.ENTITY_WARDEN_SONIC_BOOM, 3.0F, 1.0F);
-        if (target.damage(serverWorld, serverWorld.getDamageSources().sonicBoom(this), (float) this.getAttributeValue(EntityAttributes.ATTACK_DAMAGE))) {
-            double d = 0.3 * (1.0 - target.getAttributeValue(EntityAttributes.KNOCKBACK_RESISTANCE));
-            double e = 1.5 * (1.0 - target.getAttributeValue(EntityAttributes.KNOCKBACK_RESISTANCE));
-            target.addVelocity(vec3d3.getX() * e, vec3d3.getY() * d, vec3d3.getZ() * e);
+        if (vec3d2.length() < 12) {
+            this.playSound(SoundEvents.ENTITY_WARDEN_SONIC_BOOM, 3.0F, 1.0F);
+            if (target.damage(serverWorld, serverWorld.getDamageSources().sonicBoom(this), (float) this.getAttributeValue(EntityAttributes.ATTACK_DAMAGE))) {
+                int i = MathHelper.floor(vec3d2.length()) + 7;
+                for (int j = 1; j < i; j++) {
+                    Vec3d vec3d4 = vec3d.add(vec3d3.multiply(j));
+                    serverWorld.spawnParticles(ParticleTypes.SONIC_BOOM, vec3d4.x, vec3d4.y, vec3d4.z, 1, 0.0, 0.0, 0.0, 0.0);
+                }
+                double d = 0.3 * (1.0 - target.getAttributeValue(EntityAttributes.KNOCKBACK_RESISTANCE));
+                double e = 1.5 * (1.0 - target.getAttributeValue(EntityAttributes.KNOCKBACK_RESISTANCE));
+                target.addVelocity(vec3d3.getX() * e, vec3d3.getY() * d, vec3d3.getZ() * e);
+            }
         }
     }
 }
