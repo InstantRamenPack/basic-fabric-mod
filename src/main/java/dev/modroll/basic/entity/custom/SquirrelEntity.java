@@ -25,6 +25,9 @@ import net.minecraft.world.World;
 import org.jspecify.annotations.Nullable;
 
 public class SquirrelEntity extends AnimalEntity implements RangedAttackMob {
+
+    private static final float SONIC_RANGE = 20.0F;
+
     private static final TrackedData<Byte> SQUIRREL_FLAGS = DataTracker.registerData(SquirrelEntity.class, TrackedDataHandlerRegistry.BYTE);
     public final AnimationState idleAnimationState = new AnimationState();
     private int idleAnimationTimeout = 0;
@@ -35,11 +38,11 @@ public class SquirrelEntity extends AnimalEntity implements RangedAttackMob {
 
     @Override
     protected void initGoals() {
-        this.goalSelector.add(1, new SwimGoal(this));
+        this.goalSelector.add(0, new SwimGoal(this));
         this.goalSelector.add(1, new PowderSnowJumpGoal(this, this.getEntityWorld()));
-        this.goalSelector.add(2, new ProjectileAttackGoal(this, 1.0, 20, 16.0F));
-        this.goalSelector.add(2, new EscapeDangerGoal(this, 2.2));
-        this.goalSelector.add(3, new FleeEntityGoal<>(this, WolfEntity.class, 10.0F, 2.2, 2.2));
+        this.goalSelector.add(2, new ProjectileAttackGoal(this, 1.0, 20, SONIC_RANGE));
+        this.goalSelector.add(3, new EscapeDangerGoal(this, 2.2));
+        this.goalSelector.add(4, new FleeEntityGoal<>(this, WolfEntity.class, 10.0F, 2.2, 2.2));
         this.goalSelector.add(9, new WanderAroundFarGoal(this, 1.0));
         this.goalSelector.add(10, new LookAtEntityGoal(this, PlayerEntity.class, 10.0F));
         this.goalSelector.add(11, new LookAroundGoal(this));
@@ -128,10 +131,10 @@ public class SquirrelEntity extends AnimalEntity implements RangedAttackMob {
         Vec3d vec3d2 = target.getEyePos().subtract(vec3d);
         Vec3d vec3d3 = vec3d2.normalize();
 
-        if (vec3d2.length() < 12) {
-            this.playSound(SoundEvents.ENTITY_WARDEN_SONIC_BOOM, 3.0F, 1.0F);
+        if (vec3d2.length() < SONIC_RANGE) {
             if (target.damage(serverWorld, serverWorld.getDamageSources().sonicBoom(this), (float) this.getAttributeValue(EntityAttributes.ATTACK_DAMAGE))) {
                 int i = MathHelper.floor(vec3d2.length()) + 7;
+                this.playSound(SoundEvents.ENTITY_WARDEN_SONIC_BOOM, 3.0F, 1.0F);
                 for (int j = 1; j < i; j++) {
                     Vec3d vec3d4 = vec3d.add(vec3d3.multiply(j));
                     serverWorld.spawnParticles(ParticleTypes.SONIC_BOOM, vec3d4.x, vec3d4.y, vec3d4.z, 1, 0.0, 0.0, 0.0, 0.0);
