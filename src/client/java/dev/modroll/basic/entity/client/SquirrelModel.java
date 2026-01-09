@@ -8,21 +8,24 @@ import net.minecraft.client.model.ModelPartBuilder;
 import net.minecraft.client.model.ModelPartData;
 import net.minecraft.client.model.ModelTransform;
 import net.minecraft.client.model.TexturedModelData;
+import net.minecraft.client.render.entity.animation.Animation;
 import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.render.entity.model.EntityModelLayer;
-import net.minecraft.client.render.entity.state.LivingEntityRenderState;
 import net.minecraft.util.Identifier;
 
 // Made with Blockbench 5.0.7
 // Exported for Minecraft version 1.17+ for Yarn
 // Paste this class into your mod and generate all required imports
-public class SquirrelModel extends EntityModel<LivingEntityRenderState> {
+public class SquirrelModel extends EntityModel<SquirrelRenderState> {
     private final ModelPart legs;
     private final ModelPart head;
     private final ModelPart tail;
     private final ModelPart armright;
     private final ModelPart armleft;
     private final ModelPart bb_main;
+
+    private final Animation walkingAnimation;
+    private final Animation idlingAnimation;
 
     public static final EntityModelLayer SQUIRREL = new EntityModelLayer(Identifier.of(Basic.MOD_ID, "squirrel"), "main");
 
@@ -34,6 +37,9 @@ public class SquirrelModel extends EntityModel<LivingEntityRenderState> {
         this.armright = root.getChild("armright");
         this.armleft = root.getChild("armleft");
         this.bb_main = root.getChild("bb_main");
+
+        this.walkingAnimation = SquirrelAnimations.WALKING.createAnimation(root);
+        this.idlingAnimation = SquirrelAnimations.IDLING.createAnimation(root);
     }
     
     public static TexturedModelData getTexturedModelData() {
@@ -59,8 +65,13 @@ public class SquirrelModel extends EntityModel<LivingEntityRenderState> {
         ModelPartData body_r1 = bb_main.addChild("body_r1", ModelPartBuilder.create().uv(0, 11).cuboid(-2.5F, -7.0F, 3.0F, 5.0F, 7.0F, 4.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, -1.0F, -4.0F, 0.1745F, 0.0F, 0.0F));
         return TexturedModelData.of(modelData, 64, 64);
     }
-    @Override
-    public void setAngles(LivingEntityRenderState state) {
 
+    @Override
+    public void setAngles(SquirrelRenderState state) {
+        super.setAngles(state);
+        this.head.pitch = state.pitch * 0.017453292F;
+        this.head.yaw = state.relativeHeadYaw * 0.017453292F;
+        this.walkingAnimation.applyWalking(state.limbSwingAnimationProgress, state.limbSwingAmplitude, 1.5F, 4.0F);
+        this.idlingAnimation.apply(state.idleAnimationState, state.age);
     }
 }

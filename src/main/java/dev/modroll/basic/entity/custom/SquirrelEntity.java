@@ -26,6 +26,8 @@ import org.jspecify.annotations.Nullable;
 
 public class SquirrelEntity extends AnimalEntity implements RangedAttackMob {
     private static final TrackedData<Byte> SQUIRREL_FLAGS = DataTracker.registerData(SquirrelEntity.class, TrackedDataHandlerRegistry.BYTE);
+    public final AnimationState idleAnimationState = new AnimationState();
+    private int idleAnimationTimeout = 0;
 
     public SquirrelEntity(EntityType<? extends AnimalEntity> entityType, World world) {
         super(entityType, world);
@@ -36,10 +38,11 @@ public class SquirrelEntity extends AnimalEntity implements RangedAttackMob {
         this.goalSelector.add(1, new SwimGoal(this));
         this.goalSelector.add(1, new PowderSnowJumpGoal(this, this.getEntityWorld()));
         this.goalSelector.add(2, new ProjectileAttackGoal(this, 1.0, 20, 16.0F));
-        this.goalSelector.add(3, new EscapeDangerGoal(this, 2.2));
-        this.goalSelector.add(4, new FleeEntityGoal<>(this, WolfEntity.class, 10.0F, 2.2, 2.2));
-        this.goalSelector.add(5, new WanderAroundFarGoal(this, 0.6));
-        this.goalSelector.add(6, new LookAtEntityGoal(this, PlayerEntity.class, 10.0F));
+        this.goalSelector.add(2, new EscapeDangerGoal(this, 2.2));
+        this.goalSelector.add(3, new FleeEntityGoal<>(this, WolfEntity.class, 10.0F, 2.2, 2.2));
+        this.goalSelector.add(9, new WanderAroundFarGoal(this, 1.0));
+        this.goalSelector.add(10, new LookAtEntityGoal(this, PlayerEntity.class, 10.0F));
+        this.goalSelector.add(11, new LookAroundGoal(this));
         this.targetSelector.add(1, new RevengeGoal(this).setGroupRevenge());
         this.targetSelector.add(2, new ActiveTargetGoal<>(this, WolfEntity.class, true));
     }
@@ -47,7 +50,7 @@ public class SquirrelEntity extends AnimalEntity implements RangedAttackMob {
     public static DefaultAttributeContainer.Builder createAttributes() {
         return AnimalEntity.createAnimalAttributes()
                 .add(EntityAttributes.MAX_HEALTH, 8.0)
-                .add(EntityAttributes.MOVEMENT_SPEED, 0.5F)
+                .add(EntityAttributes.MOVEMENT_SPEED, 0.3F)
                 .add(EntityAttributes.ATTACK_DAMAGE, 0.5F);
     }
 
@@ -65,8 +68,19 @@ public class SquirrelEntity extends AnimalEntity implements RangedAttackMob {
     @Override
     public void tick() {
         super.tick();
-        if (!this.getEntityWorld().isClient()) {
+        if (this.getEntityWorld().isClient()) {
+            this.setupAnimationStates();
+        } else {
             this.setClimbingWall(this.horizontalCollision);
+        }
+    }
+
+    private void setupAnimationStates() {
+        if (this.idleAnimationTimeout <= 0) {
+            this.idleAnimationTimeout = 20;
+            this.idleAnimationState.start(this.age);
+        } else {
+            --this.idleAnimationTimeout;
         }
     }
 
