@@ -2,7 +2,11 @@ package dev.modroll.basic.entity.custom;
 
 import dev.modroll.basic.Basic;
 import dev.modroll.basic.entity.ModEntities;
-import net.minecraft.entity.*;
+import dev.modroll.basic.item.ModItems;
+import net.minecraft.entity.AnimationState;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.RangedAttackMob;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.ai.pathing.EntityNavigation;
@@ -17,8 +21,7 @@ import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.registry.Registries;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.MathHelper;
@@ -40,15 +43,22 @@ public class SquirrelEntity extends AnimalEntity implements RangedAttackMob {
 
     @Override
     protected void initGoals() {
-        this.goalSelector.add(0, new SwimGoal(this));
-        this.goalSelector.add(1, new PowderSnowJumpGoal(this, this.getEntityWorld()));
-        this.goalSelector.add(2, new ProjectileAttackGoal(this, 1.0, 20, SONIC_RANGE));
-        this.goalSelector.add(3, new EscapeDangerGoal(this, 2.2));
-        this.goalSelector.add(4, new FleeEntityGoal<>(this, WolfEntity.class, 10.0F, 2.2, 2.2));
-        this.goalSelector.add(5, new WanderAroundFarGoal(this, 1.0));
+        this.goalSelector.add(1, new LookAroundGoal(this));
+        this.goalSelector.add(2, new SwimGoal(this));
+        this.goalSelector.add(3, new PowderSnowJumpGoal(this, this.getEntityWorld()));
+        this.goalSelector.add(4, new ProjectileAttackGoal(this, 1.0, 20, SONIC_RANGE));
+        this.goalSelector.add(5, new EscapeDangerGoal(this, 2.2));
+        this.goalSelector.add(6, new FleeEntityGoal<>(this, WolfEntity.class, 10.0F, 2.2, 2.2));
+        this.goalSelector.add(7, new WanderAroundFarGoal(this, 1.0));
         this.goalSelector.add(10, new LookAtEntityGoal(this, PlayerEntity.class, 10.0F));
         this.targetSelector.add(1, new RevengeGoal(this).setGroupRevenge());
         this.targetSelector.add(2, new ActiveTargetGoal<>(this, WolfEntity.class, true));
+        this.targetSelector.add(3, new ActiveTargetGoal<>(
+                this,
+                LivingEntity.class,
+                true,
+                (entity, world) -> entity.hasStatusEffect(RegistryEntry.of(ModItems.OCCULTIST)) && entity != this
+        ));
     }
 
     public static DefaultAttributeContainer.Builder createAttributes() {
@@ -146,7 +156,7 @@ public class SquirrelEntity extends AnimalEntity implements RangedAttackMob {
 
                     serverWorld.spawnParticles(
                             Basic.SQUIRREL_ZAP_PARTICLE,
-                            vec3d4.x, vec3d4.y, vec3d4.z, 1, 0.0, 0.0 + 0.01 * (j % 2), 0.0, 0.0
+                            vec3d4.x, vec3d4.y, vec3d4.z, 1, 0.0 + 0.01 * (j % 2), 0.0, 0.0, 0.0 + 0.01 * (j % 2)
                     );
                 }
 

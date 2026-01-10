@@ -2,14 +2,13 @@ package dev.modroll.basic.item;
 
 import dev.modroll.basic.Basic;
 import dev.modroll.basic.effect.ShockEffect;
+import dev.modroll.basic.effect.OccultistEffect;
 import dev.modroll.basic.entity.ModEntities;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
 import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroups;
-import net.minecraft.item.SpawnEggItem;
+import net.minecraft.item.*;
 import net.minecraft.item.equipment.ArmorMaterial;
 import net.minecraft.item.equipment.ArmorMaterials;
 import net.minecraft.item.equipment.EquipmentType;
@@ -70,15 +69,31 @@ public class ModItems implements ModInitializer{
 
         public static final StatusEffect SHOCK =
             Registry.register(Registries.STATUS_EFFECT, Identifier.of("basic", "shock"), new ShockEffect());
+        public static final StatusEffect OCCULTIST =
+            Registry.register(Registries.STATUS_EFFECT, Identifier.of("basic", "occultist"), new OccultistEffect());
 
-    private static Item register(String id, Item item) {
-        return Registry.register(Registries.ITEM, Identifier.of("mymod", id), item);
-    }
+
 
     public static final Item TASER = register(
             "taser",
             TaserItem::new,
-            new TaserItem.Settings()
+            new TaserItem.Settings().maxCount(1).maxDamage(250)
+    );
+    public static final Item FLESH_BATON = register(
+            "flesh_baton",
+            FleshBaton::new,
+            new FleshBaton.Settings()
+                    .maxCount(1)
+                    .maxDamage(250)
+                    .sword(ToolMaterial.WOOD,2.0f,0.5f)
+    );
+
+    public static final Item ORNATE_HAT = register(
+            "ornate_hat",
+            OrnateHat::new,
+            new OrnateHat.Settings()
+                    .maxCount(1)
+                    .equippable(EquipmentSlot.byName("head"))
     );
 
     public static final Item SQUIRREL_HIDE = register(

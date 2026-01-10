@@ -16,20 +16,29 @@ import net.minecraft.particle.SimpleParticleType;
 import net.minecraft.util.math.random.Random;
 
 @Environment(EnvType.CLIENT)
-public class SquirrelZapParticle extends BillboardParticle {
+public class ShockParticle extends BillboardParticle {
     private final SpriteProvider spriteProvider;
 
-    protected SquirrelZapParticle(ClientWorld world, double x, double y, double z, double velocityX, SpriteProvider spriteProvider) {
+    private static double originX;
+    private static double originY;
+    private static double originZ;
+    private static float start;
+    protected ShockParticle(ClientWorld world, double x, double y, double z, double velocityX, SpriteProvider spriteProvider) {
         super(world, x, y, z, (double)0.0F, (double)0.0F, (double)0.0F, spriteProvider.getFirst());
-        this.maxAge = 12;
-        float f = this.random.nextFloat() * 0.0F + 1.0F;
+        //this.zRotation = (float) (Random.create().nextFloat() * 2 * Math.PI);
+        //this.lastZRotation = zRotation;
+        start = this.random.nextFloat() * ((float)Math.PI * 2F);
+        this.zRotation = start;
+        this.lastZRotation = start;
+        this.maxAge = 24;
+        float f = 1.0F;
         this.red = f;
         this.green = f;
         this.blue = f;
-        this.scale = 1.0F;
+        this.scale = 0.5F + this.random.nextFloat()*0.25f;
         this.spriteProvider = spriteProvider;
         this.updateSprite(spriteProvider);
-        this.lastZRotation = (float) ((Math.PI / 4) * velocityX * 100.0f);
+
     }
 
     public int getBrightness(float tint) {
@@ -37,6 +46,11 @@ public class SquirrelZapParticle extends BillboardParticle {
     }
 
     public void tick() {
+        this.zRotation = start;
+        this.lastZRotation = start;
+        if (age < 1) {
+            this.zRotation = Random.create().nextFloat() * 3.1415f;
+        }
         this.lastX = this.x;
         this.lastY = this.y;
         this.lastZ = this.z;
@@ -60,7 +74,7 @@ public class SquirrelZapParticle extends BillboardParticle {
         }
 
         public Particle createParticle(SimpleParticleType simpleParticleType, ClientWorld clientWorld, double d, double e, double f, double g, double h, double i, Random random) {
-            return new SquirrelZapParticle(clientWorld, d, e, f, g, this.spriteProvider);
+            return new ShockParticle(clientWorld, d, e, f, g, this.spriteProvider);
         }
     }
 }

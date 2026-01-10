@@ -6,15 +6,16 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.entry.RegistryEntry;
 
-public class TaserItem extends Item {
-    public TaserItem(Settings settings) {
+public class FleshBaton extends Item {
+    public FleshBaton(Settings settings) {
         super(settings);
     }
 
     @Override
     public void postHit(ItemStack stack, LivingEntity target, LivingEntity attacker) {
-        target.addStatusEffect(new StatusEffectInstance(RegistryEntry.of(ModItems.SHOCK), 80, 4));
+        target.addStatusEffect(new StatusEffectInstance(RegistryEntry.of(ModItems.OCCULTIST), 200, 4));
         stack.damage(1, attacker, (attacker.getActiveHand()));
         super.postHit(stack, target, attacker);
+
     }
 }

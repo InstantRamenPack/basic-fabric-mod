@@ -18,6 +18,7 @@ public class Basic implements ModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
     // This DefaultParticleType gets called when you want to use your particle in code.
     public static final SimpleParticleType SQUIRREL_ZAP_PARTICLE = FabricParticleTypes.simple();
+    public static final SimpleParticleType SHOCK_PARTICLE = FabricParticleTypes.simple();
 
 
 
@@ -31,6 +32,7 @@ public class Basic implements ModInitializer {
         // Register our custom particle type in the mod initializer.
         Registry.register(Registries.PARTICLE_TYPE, Identifier.of(Basic.MOD_ID, "squirrel_zap_particle"), SQUIRREL_ZAP_PARTICLE);
 
+        Registry.register(Registries.PARTICLE_TYPE, Identifier.of(Basic.MOD_ID, "shock_particle"), SHOCK_PARTICLE);
 
     }
 

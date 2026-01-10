@@ -1,5 +1,6 @@
 package dev.modroll.basic.effect;
 
+import dev.modroll.basic.Basic;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LightningEntity;
 import net.minecraft.entity.LivingEntity;
@@ -15,7 +16,7 @@ import net.minecraft.server.world.ServerWorld;
 
 public class ShockEffect extends StatusEffect {
     public ShockEffect() {
-        super(StatusEffectCategory.NEUTRAL, 0xE9B8B3);
+        super(StatusEffectCategory.NEUTRAL, 0xfbf236);
     }
 
     @Override
@@ -38,12 +39,15 @@ public class ShockEffect extends StatusEffect {
         ));
 
         // Deal 1.0F damage (half-heart) once per second
-        if (entity.age % 20 == 0) {
-            entity.damage(world,entity.getDamageSources().magic(),1.0f);
-
+        if (entity.age % 10 == 0) {
+            entity.damage(world,entity.getDamageSources().magic(),0.5f);
+            world.spawnParticles(
+                    Basic.SHOCK_PARTICLE,
+                    entity.getEntityPos().x, entity.getEntityPos().y + entity.getHeight()*0.5f, entity.getEntityPos().z, 1, 0.0 + 0.0, 0.0, 0.0, 0.0 + 0.0
+            );
             if (entity.getEntityWorld() instanceof ServerWorld) {
                 // random.nextInt(N) == 0 => 1/N chance
-                if (world.random.nextInt(16) == 0) {
+                if (world.random.nextInt(24) == 0) {
                     LightningEntity lightning = EntityType.LIGHTNING_BOLT.create(world, SpawnReason.COMMAND);
                     if (lightning != null) {
                         lightning.refreshPositionAfterTeleport(entity.getX(), entity.getY(), entity.getZ());
