@@ -1,5 +1,6 @@
 package dev.modroll.basic.entity.custom;
 
+import dev.modroll.basic.Basic;
 import dev.modroll.basic.entity.ModEntities;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.RangedAttackMob;
@@ -17,6 +18,7 @@ import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.registry.Registries;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.MathHelper;
@@ -138,10 +140,16 @@ public class SquirrelEntity extends AnimalEntity implements RangedAttackMob {
             if (target.damage(serverWorld, serverWorld.getDamageSources().sonicBoom(this), (float) this.getAttributeValue(EntityAttributes.ATTACK_DAMAGE))) {
                 int i = MathHelper.floor(vec3d2.length()) + 7;
                 this.playSound(SoundEvents.ENTITY_WARDEN_SONIC_BOOM, 3.0F, 1.0F);
-                for (int j = 1; j < i; j++) {
-                    Vec3d vec3d4 = vec3d.add(vec3d3.multiply(j));
-                    serverWorld.spawnParticles(ParticleTypes.SONIC_BOOM, vec3d4.x, vec3d4.y, vec3d4.z, 1, 0.0, 0.0, 0.0, 0.0);
+                for (int j = 0; j < i * 2; j++) {
+                    double t = j * 0.5; // half-block spacing
+                    Vec3d vec3d4 = vec3d.add(vec3d3.multiply(t));
+
+                    serverWorld.spawnParticles(
+                            Basic.SQUIRREL_ZAP_PARTICLE,
+                            vec3d4.x, vec3d4.y, vec3d4.z, 1, 0.0, 0.0 + 0.01 * (j % 2), 0.0, 0.0
+                    );
                 }
+
                 double d = 0.3 * (1.0 - target.getAttributeValue(EntityAttributes.KNOCKBACK_RESISTANCE));
                 double e = 1.5 * (1.0 - target.getAttributeValue(EntityAttributes.KNOCKBACK_RESISTANCE));
                 target.addVelocity(vec3d3.getX() * e, vec3d3.getY() * d, vec3d3.getZ() * e);

@@ -5,7 +5,6 @@ import dev.modroll.basic.effect.ShockEffect;
 import dev.modroll.basic.entity.ModEntities;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
-<<<<<<< Updated upstream
 import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.Item;
@@ -16,12 +15,12 @@ import net.minecraft.item.equipment.ArmorMaterials;
 import net.minecraft.item.equipment.EquipmentType;
 import net.minecraft.loot.slot.ItemStream;
 import net.minecraft.particle.SimpleParticleType;
-=======
+
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroups;
 import net.minecraft.item.SpawnEggItem;
->>>>>>> Stashed changes
+
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
