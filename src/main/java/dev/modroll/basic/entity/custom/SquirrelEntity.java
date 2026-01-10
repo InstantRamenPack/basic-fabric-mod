@@ -26,7 +26,7 @@ import org.jspecify.annotations.Nullable;
 
 public class SquirrelEntity extends AnimalEntity implements RangedAttackMob {
 
-    private static final float SONIC_RANGE = 20.0F;
+    private static final float SONIC_RANGE = 5.0F;
 
     private static final TrackedData<Byte> SQUIRREL_FLAGS = DataTracker.registerData(SquirrelEntity.class, TrackedDataHandlerRegistry.BYTE);
     public final AnimationState idleAnimationState = new AnimationState();
@@ -51,9 +51,9 @@ public class SquirrelEntity extends AnimalEntity implements RangedAttackMob {
 
     public static DefaultAttributeContainer.Builder createAttributes() {
         return AnimalEntity.createAnimalAttributes()
-                .add(EntityAttributes.MAX_HEALTH, 8.0)
+                .add(EntityAttributes.MAX_HEALTH, 12.0)
                 .add(EntityAttributes.MOVEMENT_SPEED, 0.3F)
-                .add(EntityAttributes.ATTACK_DAMAGE, 0.5F);
+                .add(EntityAttributes.ATTACK_DAMAGE, 4.0F);
     }
 
     @Override
@@ -130,7 +130,11 @@ public class SquirrelEntity extends AnimalEntity implements RangedAttackMob {
         Vec3d vec3d2 = target.getEyePos().subtract(vec3d);
         Vec3d vec3d3 = vec3d2.normalize();
 
-        if (vec3d2.length() < SONIC_RANGE) {
+        if (this.isOnGround() && vec3d2.length() < SONIC_RANGE) {
+            this.setVelocity(this.getVelocity().x,1.0f,this.getVelocity().z);
+        }
+        else if (!this.isOnGround() && vec3d2.length() < SONIC_RANGE + 6 && getVelocity().y < 0.1f) {
+
             if (target.damage(serverWorld, serverWorld.getDamageSources().sonicBoom(this), (float) this.getAttributeValue(EntityAttributes.ATTACK_DAMAGE))) {
                 int i = MathHelper.floor(vec3d2.length()) + 7;
                 this.playSound(SoundEvents.ENTITY_WARDEN_SONIC_BOOM, 3.0F, 1.0F);
