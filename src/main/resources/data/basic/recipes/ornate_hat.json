@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "XXX",
+    "  X",
+    "   "
+  ],
+  "key": {
+    "X": {
+      "item": "basic:squirrel_hide"
+    }
+  },
+  "result": {
+    "item": "basic:ornate_hat",
+    "count": 1
+  }
+}

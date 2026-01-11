@@ -24,18 +24,19 @@ public class ShockParticle extends BillboardParticle {
     private static double originZ;
     private static float start;
     protected ShockParticle(ClientWorld world, double x, double y, double z, double velocityX, SpriteProvider spriteProvider) {
-        super(world, x, y, z, (double)0.0F, (double)0.0F, (double)0.0F, spriteProvider.getFirst());
+
         //this.zRotation = (float) (Random.create().nextFloat() * 2 * Math.PI);
         //this.lastZRotation = zRotation;
+        super(world, x, y, z, (double)0.0F, (double)0.0F, (double)0.0F, spriteProvider.getFirst());
         start = this.random.nextFloat() * ((float)Math.PI * 2F);
         this.zRotation = start;
         this.lastZRotation = start;
-        this.maxAge = 24;
+        this.maxAge = 8;
         float f = 1.0F;
         this.red = f;
         this.green = f;
         this.blue = f;
-        this.scale = 0.5F + this.random.nextFloat()*0.25f;
+        this.scale = 1.0F + this.random.nextFloat()*0.25f;
         this.spriteProvider = spriteProvider;
         this.updateSprite(spriteProvider);
 
@@ -46,8 +47,8 @@ public class ShockParticle extends BillboardParticle {
     }
 
     public void tick() {
-        this.zRotation = start;
-        this.lastZRotation = start;
+        //this.zRotation = start;
+        //this.lastZRotation = start;
         if (age < 1) {
             this.zRotation = Random.create().nextFloat() * 3.1415f;
         }
