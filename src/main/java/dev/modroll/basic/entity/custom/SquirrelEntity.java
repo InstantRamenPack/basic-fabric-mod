@@ -30,6 +30,7 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.storage.ReadView;
 import net.minecraft.storage.WriteView;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -41,11 +42,22 @@ import org.jspecify.annotations.Nullable;
 public class SquirrelEntity extends AnimalEntity implements RangedAttackMob {
 
     private static final float SONIC_RANGE = 12.0F;
+    private static final int CLIMBING_DEBOUNCE_TICKS = 5;
+    private static final byte CLIMB_DIR_NONE = -1;
+    private static final Direction[] CLIMB_DIR_ORDER = new Direction[] {
+            Direction.NORTH,
+            Direction.SOUTH,
+            Direction.EAST,
+            Direction.WEST
+    };
 
     private static final TrackedData<Byte> SQUIRREL_FLAGS = DataTracker.registerData(SquirrelEntity.class, TrackedDataHandlerRegistry.BYTE);
+    private static final TrackedData<Byte> SQUIRREL_CLIMBING_DIR = DataTracker.registerData(SquirrelEntity.class, TrackedDataHandlerRegistry.BYTE);
     public final AnimationState idleAnimationState = new AnimationState();
+    public final AnimationState climbingAnimationState = new AnimationState();
     private int idleAnimationTimeout = 0;
     int moreBerryTicks = 0;
+    private int climbingDebounceTicks = 0;
 
     public SquirrelEntity(EntityType<? extends AnimalEntity> entityType, World world) {
         super(entityType, world);
@@ -55,12 +67,13 @@ public class SquirrelEntity extends AnimalEntity implements RangedAttackMob {
     protected void initGoals() {
         this.goalSelector.add(0, new SwimGoal(this));
         this.goalSelector.add(1, new PowderSnowJumpGoal(this, this.getEntityWorld()));
-        this.goalSelector.add(2, new ProjectileAttackGoal(this, 1.0, 20, SONIC_RANGE));
+        this.goalSelector.add(2, new ProjectileAttackGoal(this, 1.0F, 20, SONIC_RANGE));
         this.goalSelector.add(3, new EscapeDangerGoal(this, 2.2));
         this.goalSelector.add(4, new FleeEntityGoal<>(this, WolfEntity.class, 10.0F, 2.2, 2.2));
         this.goalSelector.add(5, new EatBerriesGoal(this, 1.0F, 24));
         this.goalSelector.add(9, new WanderAroundFarGoal(this, 1.0));
         this.goalSelector.add(10, new LookAtEntityGoal(this, PlayerEntity.class, 10.0F));
+        this.goalSelector.add(11, new LookAroundGoal(this));
         this.targetSelector.add(1, new RevengeGoal(this).setGroupRevenge());
         this.targetSelector.add(2, new ActiveTargetGoal<>(this, WolfEntity.class, true));
         this.targetSelector.add(3, new ActiveTargetGoal<>(
@@ -95,6 +108,7 @@ public class SquirrelEntity extends AnimalEntity implements RangedAttackMob {
     protected void initDataTracker(DataTracker.Builder builder) {
         super.initDataTracker(builder);
         builder.add(SQUIRREL_FLAGS, (byte)0);
+        builder.add(SQUIRREL_CLIMBING_DIR, CLIMB_DIR_NONE);
     }
 
     @Override
@@ -127,7 +141,16 @@ public class SquirrelEntity extends AnimalEntity implements RangedAttackMob {
     @Override
     public void tickMovement() {
         super.tickMovement();
-        this.setClimbingWall(this.horizontalCollision);
+        if (!this.getEntityWorld().isClient()) {
+            if (this.horizontalCollision) {
+                this.climbingDebounceTicks = CLIMBING_DEBOUNCE_TICKS;
+            } else if (this.climbingDebounceTicks > 0) {
+                this.climbingDebounceTicks--;
+            }
+
+            this.setClimbingWall(this.climbingDebounceTicks > 0);
+            this.updateClimbingDirection();
+        }
     }
 
     private void setupAnimationStates() {
@@ -136,6 +159,12 @@ public class SquirrelEntity extends AnimalEntity implements RangedAttackMob {
             this.idleAnimationState.start(this.age);
         } else {
             --this.idleAnimationTimeout;
+        }
+
+        if (this.isClimbing()) {
+            this.climbingAnimationState.startIfNotRunning(this.age);
+        } else {
+            this.climbingAnimationState.stop();
         }
     }
 
@@ -164,6 +193,34 @@ public class SquirrelEntity extends AnimalEntity implements RangedAttackMob {
         this.dataTracker.set(SQUIRREL_FLAGS, b);
     }
 
+    @Nullable
+    public Direction getClimbDirection() {
+        byte idx = this.dataTracker.get(SQUIRREL_CLIMBING_DIR);
+        if (idx < 0 || idx >= CLIMB_DIR_ORDER.length) {
+            return null;
+        }
+        return CLIMB_DIR_ORDER[idx];
+    }
+
+    private void updateClimbingDirection() {
+        if (!this.isClimbingWall()) {
+            this.dataTracker.set(SQUIRREL_CLIMBING_DIR, CLIMB_DIR_NONE);
+            return;
+        }
+
+        BlockPos basePos = this.getBlockPos();
+        for (byte i = 0; i < CLIMB_DIR_ORDER.length; i++) {
+            Direction dir = CLIMB_DIR_ORDER[i];
+            BlockPos pos = basePos.offset(dir);
+            if (this.getEntityWorld().getBlockState(pos).isSolidBlock(this.getEntityWorld(), pos)) {
+                this.dataTracker.set(SQUIRREL_CLIMBING_DIR, i);
+                return;
+            }
+        }
+
+        this.dataTracker.set(SQUIRREL_CLIMBING_DIR, CLIMB_DIR_NONE);
+    }
+
     @Override
     @Nullable
     public PassiveEntity createChild(ServerWorld world, PassiveEntity entity) {
@@ -184,10 +241,8 @@ public class SquirrelEntity extends AnimalEntity implements RangedAttackMob {
         Vec3d vec3d3 = vec3d2.normalize();
 
         if (this.isOnGround() && vec3d2.length() < SONIC_RANGE) {
-            this.setVelocity(this.getVelocity().x,1.0f,this.getVelocity().z);
-        }
-        else if (!this.isOnGround() && vec3d2.length() < SONIC_RANGE + 6 && getVelocity().y < 0.1f) {
-
+            this.addVelocity(0.0f, 1.0f, 0.0f);
+        } else if (!this.isOnGround() && vec3d2.length() < SONIC_RANGE + 6 && getVelocity().y < 0.1f) {
             if (target.damage(serverWorld, serverWorld.getDamageSources().sonicBoom(this), (float) this.getAttributeValue(EntityAttributes.ATTACK_DAMAGE))) {
                 int i = MathHelper.floor(vec3d2.length()) + 7;
                 this.playSound(SoundEvents.ENTITY_WARDEN_SONIC_BOOM, 3.0F, 1.0F);

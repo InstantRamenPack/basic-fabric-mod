@@ -2,11 +2,9 @@ package dev.modroll.basic.entity.client;
 
 import dev.modroll.basic.Basic;
 import dev.modroll.basic.entity.custom.SquirrelEntity;
-import net.minecraft.block.BlockState;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.MobEntityRenderer;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
 public class SquirrelRenderer extends MobEntityRenderer<SquirrelEntity, SquirrelRenderState, SquirrelModel> {
@@ -29,30 +27,13 @@ public class SquirrelRenderer extends MobEntityRenderer<SquirrelEntity, Squirrel
     public void updateRenderState(SquirrelEntity entity, SquirrelRenderState state, float tickDelta) {
         super.updateRenderState(entity, state, tickDelta);
         state.idleAnimationState.copyFrom(entity.idleAnimationState);
+        state.climbingAnimationState.copyFrom(entity.climbingAnimationState);
         state.climbing = entity.isClimbing();
         state.climbYaw = state.climbing ? getClimbYaw(entity) : 0.0F;
-        state.climbingAnimationState.setRunning(state.climbing, entity.age);
     }
 
     private static float getClimbYaw(SquirrelEntity entity) {
-        BlockPos basePos = entity.getBlockPos();
-        Direction[] order = new Direction[] {
-                Direction.NORTH,
-                Direction.SOUTH,
-                Direction.EAST,
-                Direction.WEST
-        };
-        Direction facing = null;
-
-        for (Direction dir : order) {
-            BlockPos pos = basePos.offset(dir);
-            BlockState state = entity.getEntityWorld().getBlockState(pos);
-            if (state.isSolidBlock(entity.getEntityWorld(), pos)) {
-                facing = dir;
-                break;
-            }
-        }
-
+        Direction facing = entity.getClimbDirection();
         if (facing == null) {
             facing = entity.getHorizontalFacing();
         }
