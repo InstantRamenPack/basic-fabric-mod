@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "  X",
+    " X ",
+    "X   "
+  ],
+  "key": {
+    "X": {
+      "item": "basic:squirrel_hide"
+    }
+  },
+  "result": {
+    "item": "basic:flesh_baton",
+    "count": 1
+  }
+}
