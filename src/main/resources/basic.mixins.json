@@ -3,7 +3,7 @@
 	"package": "dev.modroll.basic.mixin",
 	"compatibilityLevel": "JAVA_21",
 	"mixins": [
-		"ExampleMixin"
+		"SweetBerryBushBlockMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
