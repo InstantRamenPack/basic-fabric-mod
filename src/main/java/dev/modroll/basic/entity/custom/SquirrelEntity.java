@@ -115,7 +115,6 @@ public class SquirrelEntity extends AnimalEntity implements RangedAttackMob {
         if (this.getEntityWorld().isClient()) {
             this.setupAnimationStates();
         } else {
-            this.setClimbingWall(this.horizontalCollision);
             if (this.moreBerryTicks > 0) {
                 this.moreBerryTicks = this.moreBerryTicks - this.random.nextInt(3);
                 if (this.moreBerryTicks < 0) {
@@ -123,6 +122,12 @@ public class SquirrelEntity extends AnimalEntity implements RangedAttackMob {
                 }
             }
         }
+    }
+
+    @Override
+    public void tickMovement() {
+        super.tickMovement();
+        this.setClimbingWall(this.horizontalCollision);
     }
 
     private void setupAnimationStates() {

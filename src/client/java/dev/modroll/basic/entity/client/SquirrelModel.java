@@ -17,6 +17,7 @@ import net.minecraft.util.Identifier;
 // Exported for Minecraft version 1.17+ for Yarn
 // Paste this class into your mod and generate all required imports
 public class SquirrelModel extends EntityModel<SquirrelRenderState> {
+    private final ModelPart root;
     private final ModelPart legs;
     private final ModelPart head;
     private final ModelPart tail;
@@ -27,12 +28,14 @@ public class SquirrelModel extends EntityModel<SquirrelRenderState> {
 
     private final Animation walkingAnimation;
     private final Animation idlingAnimation;
+    private final Animation climbingAnimation;
 
     public static final EntityModelLayer SQUIRREL = new EntityModelLayer(Identifier.of(Basic.MOD_ID, "squirrel"), "main");
 
 
     public SquirrelModel(ModelPart root) {
         super(root);
+        this.root = root;
         this.legs = root.getChild("legs");
         this.head = root.getChild("head");
         this.tail = root.getChild("tail");
@@ -43,6 +46,7 @@ public class SquirrelModel extends EntityModel<SquirrelRenderState> {
 
         this.walkingAnimation = SquirrelAnimations.WALKING.createAnimation(root);
         this.idlingAnimation = SquirrelAnimations.IDLING.createAnimation(root);
+        this.climbingAnimation = SquirrelAnimations.CLIMBING.createAnimation(root);
     }
     
     public static TexturedModelData getTexturedModelData() {
@@ -78,9 +82,14 @@ public class SquirrelModel extends EntityModel<SquirrelRenderState> {
     @Override
     public void setAngles(SquirrelRenderState state) {
         super.setAngles(state);
+        this.root.yaw = state.climbing ? state.climbYaw : 0.0F;
         this.head.pitch = state.pitch * 0.017453292F;
         this.head.yaw = state.relativeHeadYaw * 0.017453292F;
-        this.walkingAnimation.applyWalking(state.limbSwingAnimationProgress, state.limbSwingAmplitude, 1.5F, 4.0F);
-        this.idlingAnimation.apply(state.idleAnimationState, state.age);
+        if (state.climbing) {
+            this.climbingAnimation.apply(state.climbingAnimationState, state.age);
+        } else {
+            this.walkingAnimation.applyWalking(state.limbSwingAnimationProgress, state.limbSwingAmplitude, 1.5F, 4.0F);
+            this.idlingAnimation.apply(state.idleAnimationState, state.age);
+        }
     }
 }
