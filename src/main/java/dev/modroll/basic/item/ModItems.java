@@ -58,6 +58,12 @@ public class ModItems implements ModInitializer{
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS).register((itemGroup) -> {
                 itemGroup.add(ModItems.TASER);
         });
+        ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS).register((itemGroup) -> {
+            itemGroup.add(ModItems.FLESH_BATON);
+        });
+        ItemGroupEvents.modifyEntriesEvent(ItemGroups.COMBAT).register((itemGroup) -> {
+            itemGroup.add(ModItems.ORNATE_HAT);
+        });
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.INGREDIENTS).register((itemGroup) -> {
             itemGroup.add(ModItems.SQUIRREL_HIDE);
         });
