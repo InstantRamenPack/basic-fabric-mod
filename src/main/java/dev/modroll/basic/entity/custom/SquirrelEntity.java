@@ -258,20 +258,19 @@ public class SquirrelEntity extends AnimalEntity implements RangedAttackMob {
         if (this.isOnGround() && vec3d2.length() < SONIC_RANGE) {
             this.addVelocity(0.0f, 1.0f, 0.0f);
         } else if (!this.isOnGround() && vec3d2.length() < SONIC_RANGE + 6 && getVelocity().y < 0.1f) {
+            this.playSound(SoundEvents.ENTITY_WARDEN_SONIC_BOOM, 3.0F, 1.0F);
+            // this.attackAnimationTimeout = 20; unused because i broke it!
+            int i = MathHelper.floor(vec3d2.length()) + 7;
+            for (int j = 0; j < i * 2; j++) {
+                double t = j * 0.5; // half-block spacing
+                Vec3d vec3d4 = vec3d.add(vec3d3.multiply(t));
+
+                serverWorld.spawnParticles(
+                        Basic.SQUIRREL_ZAP_PARTICLE,
+                        vec3d4.x, vec3d4.y, vec3d4.z, 1, 0.0 + 0.01 * (j % 2), 0.0, 0.0, 0.0 + 0.01 * (j % 2)
+                );
+            }
             if (target.damage(serverWorld, serverWorld.getDamageSources().sonicBoom(this), (float) this.getAttributeValue(EntityAttributes.ATTACK_DAMAGE))) {
-                int i = MathHelper.floor(vec3d2.length()) + 7;
-                this.playSound(SoundEvents.ENTITY_WARDEN_SONIC_BOOM, 3.0F, 1.0F);
-                // this.attackAnimationTimeout = 20; unused because i broke it!
-                for (int j = 0; j < i * 2; j++) {
-                    double t = j * 0.5; // half-block spacing
-                    Vec3d vec3d4 = vec3d.add(vec3d3.multiply(t));
-
-                    serverWorld.spawnParticles(
-                            Basic.SQUIRREL_ZAP_PARTICLE,
-                            vec3d4.x, vec3d4.y, vec3d4.z, 1, 0.0 + 0.01 * (j % 2), 0.0, 0.0, 0.0 + 0.01 * (j % 2)
-                    );
-                }
-
                 double d = 0.3 * (1.0 - target.getAttributeValue(EntityAttributes.KNOCKBACK_RESISTANCE));
                 double e = 1.5 * (1.0 - target.getAttributeValue(EntityAttributes.KNOCKBACK_RESISTANCE));
                 target.addVelocity(vec3d3.getX() * e, vec3d3.getY() * d, vec3d3.getZ() * e);
