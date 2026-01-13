@@ -74,7 +74,7 @@ public class SquirrelEntity extends AnimalEntity implements RangedAttackMob {
         this.goalSelector.add(2, new ProjectileAttackGoal(this, 1.0F, 20, SONIC_RANGE));
         this.goalSelector.add(3, new EscapeDangerGoal(this, 2.2));
         this.goalSelector.add(4, new FleeEntityGoal<>(this, WolfEntity.class, 10.0F, 2.2, 2.2));
-        this.goalSelector.add(5, new EatBerriesGoal(this, 1.0F, 24));
+        this.goalSelector.add(5, new SquirrelEntity.EatBerriesGoal(this, 1.0F, 24));
         this.goalSelector.add(9, new WanderAroundFarGoal(this, 1.0));
         this.goalSelector.add(10, new LookAtEntityGoal(this, PlayerEntity.class, 10.0F));
         this.goalSelector.add(11, new LookAroundGoal(this));
