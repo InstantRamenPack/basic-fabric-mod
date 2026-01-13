@@ -46,12 +46,12 @@ public class ShockEffect extends StatusEffect {
                     entity.getEntityPos().x, entity.getEntityPos().y + entity.getHeight()*0.5f, entity.getEntityPos().z, 1, 0.0 + 0.0, 0.0, 0.0, 0.0 + 0.0
             );
             if (entity.getEntityWorld() instanceof ServerWorld) {
-                // random.nextInt(N) == 0 => 1/N chance
+                // random.nextInt(N) == 0 => 1/N chance (doc said so)
                 if (world.random.nextInt(24) == 0) {
                     LightningEntity lightning = EntityType.LIGHTNING_BOLT.create(world, SpawnReason.COMMAND);
                     if (lightning != null) {
                         lightning.refreshPositionAfterTeleport(entity.getX(), entity.getY(), entity.getZ());
-                        // Optional: make it a "visual" strike only (no fire/damage):
+
                          lightning.setCosmetic(true);
                         entity.damage(world,world.getDamageSources().magic(),8.0f);
                         world.spawnEntity(lightning);

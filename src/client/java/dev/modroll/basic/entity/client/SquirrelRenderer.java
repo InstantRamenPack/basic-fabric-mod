@@ -30,6 +30,7 @@ public class SquirrelRenderer extends MobEntityRenderer<SquirrelEntity, Squirrel
         state.climbingAnimationState.copyFrom(entity.climbingAnimationState);
         state.climbing = entity.isClimbing();
         state.climbYaw = state.climbing ? getClimbYaw(entity) : 0.0F;
+        state.attacking = entity.isUsingAttack();
     }
 
     private static float getClimbYaw(SquirrelEntity entity) {

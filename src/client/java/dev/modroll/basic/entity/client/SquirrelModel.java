@@ -29,8 +29,10 @@ public class SquirrelModel extends EntityModel<SquirrelRenderState> {
     private final Animation walkingAnimation;
     private final Animation idlingAnimation;
     private final Animation climbingAnimation;
+    private final Animation attackingAnimation;
 
     public static final EntityModelLayer SQUIRREL = new EntityModelLayer(Identifier.of(Basic.MOD_ID, "squirrel"), "main");
+
 
 
     public SquirrelModel(ModelPart root) {
@@ -47,6 +49,7 @@ public class SquirrelModel extends EntityModel<SquirrelRenderState> {
         this.walkingAnimation = SquirrelAnimations.WALKING.createAnimation(root);
         this.idlingAnimation = SquirrelAnimations.IDLING.createAnimation(root);
         this.climbingAnimation = SquirrelAnimations.CLIMBING.createAnimation(root);
+        this.attackingAnimation = SquirrelAnimations.ATTACKING.createAnimation(root);
     }
     
     public static TexturedModelData getTexturedModelData() {
@@ -85,7 +88,10 @@ public class SquirrelModel extends EntityModel<SquirrelRenderState> {
         this.root.yaw = state.climbing ? state.climbYaw : 0.0F;
         this.head.pitch = state.pitch * 0.017453292F;
         this.head.yaw = state.relativeHeadYaw * 0.017453292F;
-        if (state.climbing) {
+        if (state.attacking) {
+            this.attackingAnimation.apply(state.attackingAnimationState,state.age);
+        }
+        else if (state.climbing) {
             this.climbingAnimation.apply(state.climbingAnimationState, state.age);
         } else {
             this.walkingAnimation.applyWalking(state.limbSwingAnimationProgress, state.limbSwingAmplitude, 1.5F, 4.0F);

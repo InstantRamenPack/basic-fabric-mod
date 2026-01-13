@@ -53,9 +53,13 @@ public class SquirrelEntity extends AnimalEntity implements RangedAttackMob {
 
     private static final TrackedData<Byte> SQUIRREL_FLAGS = DataTracker.registerData(SquirrelEntity.class, TrackedDataHandlerRegistry.BYTE);
     private static final TrackedData<Byte> SQUIRREL_CLIMBING_DIR = DataTracker.registerData(SquirrelEntity.class, TrackedDataHandlerRegistry.BYTE);
+
+
     public final AnimationState idleAnimationState = new AnimationState();
     public final AnimationState climbingAnimationState = new AnimationState();
+    public final AnimationState attackingAnimationState = new AnimationState();
     private int idleAnimationTimeout = 0;
+    private int attackAnimationTimeout = 0;
     int moreBerryTicks = 0;
     private int climbingDebounceTicks = 0;
 
@@ -154,18 +158,25 @@ public class SquirrelEntity extends AnimalEntity implements RangedAttackMob {
     }
 
     private void setupAnimationStates() {
-        if (this.idleAnimationTimeout <= 0) {
-            this.idleAnimationTimeout = 20;
-            this.idleAnimationState.start(this.age);
-        } else {
-            --this.idleAnimationTimeout;
+        if (this.attackAnimationTimeout > 0) {
+            this.attackingAnimationState.startIfNotRunning(this.age);
+            attackAnimationTimeout --;
+        }
+        else {
+            if (this.idleAnimationTimeout <= 0) {
+                this.idleAnimationTimeout = 20;
+                this.idleAnimationState.start(this.age);
+            } else {
+                --this.idleAnimationTimeout;
+            }
+
+            if (this.isClimbing()) {
+                this.climbingAnimationState.startIfNotRunning(this.age);
+            } else {
+                this.climbingAnimationState.stop();
+            }
         }
 
-        if (this.isClimbing()) {
-            this.climbingAnimationState.startIfNotRunning(this.age);
-        } else {
-            this.climbingAnimationState.stop();
-        }
     }
 
     @Override
@@ -176,6 +187,10 @@ public class SquirrelEntity extends AnimalEntity implements RangedAttackMob {
     @Override
     public boolean isClimbing() {
         return this.isClimbingWall();
+    }
+
+    public boolean isUsingAttack() {
+        return this.attackAnimationTimeout > 0;
     }
 
     public boolean isClimbingWall() {
@@ -246,6 +261,7 @@ public class SquirrelEntity extends AnimalEntity implements RangedAttackMob {
             if (target.damage(serverWorld, serverWorld.getDamageSources().sonicBoom(this), (float) this.getAttributeValue(EntityAttributes.ATTACK_DAMAGE))) {
                 int i = MathHelper.floor(vec3d2.length()) + 7;
                 this.playSound(SoundEvents.ENTITY_WARDEN_SONIC_BOOM, 3.0F, 1.0F);
+                // this.attackAnimationTimeout = 20; unused because i broke it!
                 for (int j = 0; j < i * 2; j++) {
                     double t = j * 0.5; // half-block spacing
                     Vec3d vec3d4 = vec3d.add(vec3d3.multiply(t));
