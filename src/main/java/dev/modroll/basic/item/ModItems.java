@@ -6,14 +6,8 @@ import dev.modroll.basic.effect.OccultistEffect;
 import dev.modroll.basic.entity.ModEntities;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
-import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.*;
-import net.minecraft.item.equipment.ArmorMaterial;
-import net.minecraft.item.equipment.ArmorMaterials;
-import net.minecraft.item.equipment.EquipmentType;
-import net.minecraft.loot.slot.ItemStream;
-import net.minecraft.particle.SimpleParticleType;
 
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.item.Item;
@@ -58,8 +52,8 @@ public class ModItems implements ModInitializer{
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS).register((itemGroup) -> {
                 itemGroup.add(ModItems.TASER);
         });
-        ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS).register((itemGroup) -> {
-            itemGroup.add(ModItems.FLESH_BATON);
+        ItemGroupEvents.modifyEntriesEvent(ItemGroups.COMBAT).register((itemGroup) -> {
+            itemGroup.add(ModItems.ORNATE_CUDGEL);
         });
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.COMBAT).register((itemGroup) -> {
             itemGroup.add(ModItems.ORNATE_HAT);
@@ -85,10 +79,10 @@ public class ModItems implements ModInitializer{
             TaserItem::new,
             new TaserItem.Settings().maxCount(1).maxDamage(250)
     );
-    public static final Item FLESH_BATON = register(
-            "flesh_baton",
-            FleshBaton::new,
-            new FleshBaton.Settings()
+    public static final Item ORNATE_CUDGEL = register(
+            "ornate_cudgel",
+            OrnateCudgel::new,
+            new OrnateCudgel.Settings()
                     .maxCount(1)
                     .maxDamage(250)
                     .sword(ToolMaterial.WOOD,2.0f,0.5f)

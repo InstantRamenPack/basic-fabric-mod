@@ -6,8 +6,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.entry.RegistryEntry;
 
-public class FleshBaton extends Item {
-    public FleshBaton(Settings settings) {
+public class OrnateCudgel extends Item {
+    public OrnateCudgel(Settings settings) {
         super(settings);
     }
 

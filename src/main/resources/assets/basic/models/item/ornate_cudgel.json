@@ -2,6 +2,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "basic:item/flesh_baton"
+    "layer0": "basic:item/ornate_cudgel"
   }
 }
