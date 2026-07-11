@@ -1,0 +1,112 @@
+package dev.modroll.squirrel.item;
+
+import dev.modroll.squirrel.Squirrel;
+import dev.modroll.squirrel.effect.ShockEffect;
+import dev.modroll.squirrel.effect.OccultistEffect;
+import dev.modroll.squirrel.entity.ModEntities;
+import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.item.*;
+
+import net.minecraft.entity.effect.StatusEffect;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroups;
+import net.minecraft.item.SpawnEggItem;
+
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.util.Identifier;
+
+import java.util.function.Function;
+
+public class ModItems implements ModInitializer{
+
+
+    @Override
+    public void onInitialize() {
+        // ...
+    }
+
+
+    public static Item register(
+            String name,
+            Function<Item.Settings, Item> itemFactory,
+            Item.Settings settings
+    ) {
+        RegistryKey<Item> itemKey = RegistryKey.of(
+                RegistryKeys.ITEM,
+                Identifier.of(Squirrel.MOD_ID, name)
+        );
+        Item item = itemFactory.apply(settings.registryKey(itemKey));
+        Registry.register(Registries.ITEM, itemKey, item);
+
+        return item;
+    }
+
+    public static void registerModItems() {
+        // Called during mod initialization to register our items.
+
+        ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS).register((itemGroup) -> {
+                itemGroup.add(ModItems.TASER);
+        });
+        ItemGroupEvents.modifyEntriesEvent(ItemGroups.COMBAT).register((itemGroup) -> {
+            itemGroup.add(ModItems.ORNATE_CUDGEL);
+        });
+        ItemGroupEvents.modifyEntriesEvent(ItemGroups.COMBAT).register((itemGroup) -> {
+            itemGroup.add(ModItems.ORNATE_HAT);
+        });
+        ItemGroupEvents.modifyEntriesEvent(ItemGroups.INGREDIENTS).register((itemGroup) -> {
+            itemGroup.add(ModItems.SQUIRREL_HIDE);
+        });
+        ItemGroupEvents.modifyEntriesEvent(ItemGroups.SPAWN_EGGS).register((itemGroup) -> {
+            itemGroup.add(ModItems.SQUIRREL_SPAWN_EGG);
+        });
+    }
+
+
+        public static final StatusEffect SHOCK =
+            Registry.register(Registries.STATUS_EFFECT, Identifier.of("squirrel", "shock"), new ShockEffect());
+        public static final StatusEffect OCCULTIST =
+            Registry.register(Registries.STATUS_EFFECT, Identifier.of("squirrel", "occultist"), new OccultistEffect());
+
+
+
+    public static final Item TASER = register(
+            "taser",
+            TaserItem::new,
+            new TaserItem.Settings().maxCount(1).maxDamage(250)
+    );
+    public static final Item ORNATE_CUDGEL = register(
+            "ornate_cudgel",
+            OrnateCudgel::new,
+            new OrnateCudgel.Settings()
+                    .maxCount(1)
+                    .maxDamage(250)
+                    .sword(ToolMaterial.WOOD,2.0f,0.5f)
+    );
+
+    public static final Item ORNATE_HAT = register(
+            "ornate_hat",
+            OrnateHat::new,
+            new OrnateHat.Settings()
+                    .maxCount(1)
+                    .equippable(EquipmentSlot.byName("head"))
+    );
+
+    public static final Item SQUIRREL_HIDE = register(
+            "squirrel_hide",
+            Item::new,
+            new Item.Settings()
+    );
+
+    public static final Item SQUIRREL_SPAWN_EGG = register(
+            "squirrel_spawn_egg",
+            SpawnEggItem::new,
+            new Item.Settings().spawnEgg(ModEntities.SQUIRREL)
+    );
+
+
+}

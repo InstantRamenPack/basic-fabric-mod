@@ -1,33 +1,33 @@
 {
 	"schemaVersion": 1,
-	"id": "basic",
+	"id": "squirrel",
 	"version": "${version}",
-	"name": "Basic",
-	"description": "Basic Fabric mod adding squirrels to Minecraft. Made as a project for CS SWE 1.",
+	"name": "Squirrel",
+	"description": "Squirrel Fabric mod adding squirrels to Minecraft. Made as a project for CS SWE 1.",
 	"authors": [
-		"Raymond Zhu",
-		"Kian Jenks",
-		"Jasmine Butler"
+		"InstantRamenPack",
+		"spkbreadroll",
+		"Atomic4now"
 	],
 	"contact": {
 		"homepage": "https://github.com/InstantRamenPack/basic-fabric-mod",
 		"sources": "https://github.com/InstantRamenPack/basic-fabric-mod"
 	},
 	"license": "CC0-1.0",
-	"icon": "assets/basic/icon.png",
+	"icon": "assets/squirrel/icon.png",
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"dev.modroll.basic.Basic"
+			"dev.modroll.squirrel.Squirrel"
 		],
 		"client": [
-			"dev.modroll.basic.BasicClient"
+			"dev.modroll.squirrel.SquirrelClient"
 		]
 	},
 	"mixins": [
-		"basic.mixins.json",
+		"squirrel.mixins.json",
 		{
-			"config": "basic.client.mixins.json",
+			"config": "squirrel.client.mixins.json",
 			"environment": "client"
 		}
 	],
