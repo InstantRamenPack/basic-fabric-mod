@@ -1,3 +1,3 @@
-# Squirrel Fabric Mod
+# Squirrel Mod
 
-Squirrel Fabric mod adding squirrels to Minecraft. Made as a project for CS SWE 1.
+Fabric mod adding squirrels to Minecraft. Made as a project for CS SWE 1. Install it like any other fabric mod.
